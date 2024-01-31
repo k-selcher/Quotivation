@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Loader } from "react-feather";
 import Quotes from "./components/quotes/Quotes";
+import Message from "./components/Message";
 import "./App.css";
 import FavoriteQuotes from "./components/quotes/FavoriteQuotes";
 
@@ -10,6 +11,8 @@ function App() {
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [favoriteQuotes, setFavoriteQuotes] = useState([])
+  const [messageText, setMessageText] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
   const [category, setCategory] = useState("All");
   const maxFaves = 3;
   const quotesUrl =
@@ -45,14 +48,22 @@ function App() {
       const alreadyFavorite = favoriteQuotes.find((favorite) => favorite.id === selectedQuote.id);
 
       if (alreadyFavorite) {
-        console.log("You already favorited this quote.")
+        setMessageText("You already favorited this quote.")
+        setShowMessage(true);
       } else if (favoriteQuotes.length < maxFaves) {
       setFavoriteQuotes([...favoriteQuotes, selectedQuote]);
-      console.log("Added to Favorites");
+      setMessageText("Added to Favorites");
+      setShowMessage(true);
     } else {
-      console.log("Max number of quotes reached. Please delete one to add a new one.");
+      setMessageText("Max number of quotes reached. Please delete one to add a new one.");
+      setShowMessage(true);
     }
   };
+
+
+  const removeMessage = () => {
+    setShowMessage(false);
+  }
 
   const removeFromFavorites = (quoteId) => {
     const updatedFavorites = favoriteQuotes.filter((quote) => quote.id !== quoteId);
@@ -62,6 +73,7 @@ function App() {
   return (
     <div className='App'>
       <Header />
+      { showMessage && <Message messageText={messageText} removeMessage={removeMessage}/> }
       <main>
       <FavoriteQuotes favoriteQuotes={favoriteQuotes} maxFaves={maxFaves} removeFromFavorites={removeFromFavorites} />
         {loading ? (
