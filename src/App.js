@@ -10,7 +10,7 @@ import FavoriteQuotes from "./components/quotes/FavoriteQuotes";
 function App() {
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [favoriteQuotes, setFavoriteQuotes] = useState([])
+  const [favoriteQuotes, setFavoriteQuotes] = useState(JSON.parse(window.localStorage.getItem("favoriteQuotes")) || []);
   const [messageText, setMessageText] = useState("");
   const [showMessage, setShowMessage] = useState(false);
   const [category, setCategory] = useState("All");
@@ -35,12 +35,15 @@ function App() {
     fetchQuotes();
   }, []);
 
+  useEffect(() => {
+    window.localStorage.setItem("favoriteQuotes", JSON.stringify(favoriteQuotes));
+  }, [favoriteQuotes]);
+
   const filteredQuotes = category !== "All" ? quotes.filter((quote) => quote.categories.includes(category)) : quotes;
 
   const handleCategoryChange = (e) => {
     setCategory(e.target.value);
-  };
-
+  }; 
 
   const addToFavorites = (quoteId) => {
     const selectedQuote = quotes.find((quote) => quote.id === quoteId);
@@ -61,6 +64,7 @@ function App() {
   };
 
 
+  
   const removeMessage = () => {
     setShowMessage(false);
   }
